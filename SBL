@@ -1,0 +1,245 @@
+const grid = document.getElementById('productGrid');
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const platformFilter = document.getElementById('platformFilter');
+const resultsCount = document.getElementById('resultsCount');
+const menuBtn = document.getElementById('menuBtn');
+const mainNav = document.getElementById('mainNav');
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const uniq = arr => [...new Set(arr)].sort((a,b)=>a.localeCompare(b,'pl'));
+uniq(PRODUCTS.map(p=>p.category)).forEach(v=>categoryFilter.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`));
+uniq(PRODUCTS.map(p=>p.platform)).forEach(v=>platformFilter.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`));
+
+function escapeHtml(s=''){
+  return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function render(){
+  const q = searchInput.value.trim().toLowerCase();
+  const cat = categoryFilter.value;
+  const plat = platformFilter.value;
+  const items = PRODUCTS.filter(p => {
+    const blob = `${p.title} ${p.category} ${p.platform} ${p.description}`.toLowerCase();
+    return (!q || blob.includes(q)) && (cat==='all' || p.category===cat) && (plat==='all' || p.platform===plat);
+  });
+  resultsCount.textContent = `${items.length} ${items.length===1?'oferta':'oferty'}`;
+  if(!items.length){
+    grid.innerHTML = '<div class="empty">Brak ofert pasujących do wybranych filtrów.</div>';
+    return;
+  }
+  grid.innerHTML = items.map(p => `
+    <article class="product-card">
+      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" />
+      <div class="product-body">
+        <div class="meta"><span class="chip">${escapeHtml(p.category)}</span><span class="chip">${escapeHtml(p.platform)}</span></div>
+        <h3>${escapeHtml(p.title)}</h3>
+        <p class="desc">${escapeHtml(p.description)}</p>
+        <div class="price">${escapeHtml(p.price)}</div>
+        <div class="product-actions">
+          <a class="btn primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">Zobacz ogłoszenie</a>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+[searchInput, categoryFilter, platformFilter].forEach(el => el.addEventListener('input', render));
+menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
+mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click',()=>mainNav.classList.remove('open')));
+render();
+
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Prywatny katalog ofert sprzętu komputerowego, laptopów, części i elektroniki." />
+  <title>SobolTech — sprzęt, części i elektronika</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#start" aria-label="SobolTech — strona główna">
+        <span class="brand-mark">ST</span>
+        <span>SobolTech</span>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-label="Otwórz menu">☰</button>
+      <nav id="mainNav">
+        <a href="#oferty">Oferty</a>
+        <a href="#jak-kupic">Jak kupić</a>
+        <a href="#o-mnie">O mnie</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="start">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">PRYWATNY KATALOG OFERT</p>
+          <h1>Sprzęt komputerowy, laptopy, części i elektronika.</h1>
+          <p class="hero-text">W jednym miejscu znajdziesz moje aktualne ogłoszenia. Zakup odbywa się bezpośrednio przez zewnętrzne platformy sprzedażowe.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#oferty">Zobacz oferty</a>
+            <a class="btn ghost" href="#kontakt">Kontakt</a>
+          </div>
+          <div class="trust-row">
+            <span>✓ czytelne opisy</span>
+            <span>✓ zdjęcia i parametry</span>
+            <span>✓ zakup przez platformę zewnętrzną</span>
+          </div>
+        </div>
+        <aside class="hero-card">
+          <div class="status-dot"></div>
+          <h2>Aktualne ogłoszenia</h2>
+          <p>Oferty są prezentowane na tej stronie, a finalizacja zakupu następuje w OLX, Allegro Lokalnie, Vinted lub innej wskazanej platformie.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="catalog" id="oferty">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">KATALOG</p>
+            <h2>Aktualne oferty</h2>
+          </div>
+          <span id="resultsCount" class="count-badge"></span>
+        </div>
+
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Szukaj np. laptop, SSD, RAM..." />
+          <select id="categoryFilter">
+            <option value="all">Wszystkie kategorie</option>
+          </select>
+          <select id="platformFilter">
+            <option value="all">Wszystkie platformy</option>
+          </select>
+        </div>
+
+        <div id="productGrid" class="product-grid"></div>
+      </div>
+    </section>
+
+    <section class="info-section" id="jak-kupic">
+      <div class="container">
+        <p class="eyebrow">PROSTY PROCES</p>
+        <h2>Jak kupić?</h2>
+        <div class="steps">
+          <article><span>1</span><h3>Wybierz ofertę</h3><p>Przejrzyj parametry, opis oraz zdjęcia produktu.</p></article>
+          <article><span>2</span><h3>Przejdź do ogłoszenia</h3><p>Kliknij przycisk prowadzący do OLX, Allegro Lokalnie, Vinted lub innej platformy.</p></article>
+          <article><span>3</span><h3>Kup na platformie</h3><p>Kontakt, płatność i wysyłka odbywają się zgodnie z zasadami wskazanej platformy.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="o-mnie">
+      <div class="container about-grid">
+        <div>
+          <p class="eyebrow">O STRONIE</p>
+          <h2>Prywatny katalog sprzętu</h2>
+        </div>
+        <p>Ta strona służy do prezentacji moich ogłoszeń i ułatwia znalezienie wszystkich ofert w jednym miejscu. Nie jest oficjalną stroną ani partnerem OLX, Allegro Lokalnie, Vinted ani innych platform, do których prowadzą linki.</p>
+      </div>
+    </section>
+
+    <section class="contact" id="kontakt">
+      <div class="container contact-card">
+        <div>
+          <p class="eyebrow">KONTAKT</p>
+          <h2>Masz pytanie o ofertę?</h2>
+          <p>Najbezpieczniej skontaktować się ze mną przez wiadomość na platformie, na której znajduje się dane ogłoszenie.</p>
+        </div>
+        <a class="btn primary" href="#oferty">Przejdź do ofert</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-wrap">
+      <div>
+        <strong>SobolTech</strong>
+        <p>Prywatny katalog ofert.</p>
+      </div>
+      <div class="footer-links">
+        <a href="privacy.html">Polityka prywatności</a>
+        <a href="legal.html">Informacje prawne</a>
+      </div>
+      <small>© <span id="year"></span> SobolTech</small>
+    </div>
+  </footer>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Informacje prawne — SobolTech</title><link rel="stylesheet" href="styles.css"></head><body><header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><span class="brand-mark">ST</span><span>SobolTech</span></a></div></header><main class="container legal-page"><p class="eyebrow">INFORMACJE</p><h1>Informacje prawne</h1><h2>Charakter strony</h2><p>Strona ma charakter informacyjny i katalogowy. Prezentuje prywatne ogłoszenia właściciela strony oraz odsyła do zewnętrznych platform sprzedażowych.</p><h2>Platformy zewnętrzne</h2><p>OLX, Allegro Lokalnie, Vinted i inne wskazane platformy są niezależnymi serwisami. Ta strona nie jest ich oficjalnym partnerem ani przedstawicielem, o ile wyraźnie nie wskazano inaczej.</p><h2>Zakup</h2><p>Warunki zakupu, płatności, dostawy, ochrony kupującego i kontaktu wynikają z zasad platformy, na której finalizowana jest konkretna transakcja, oraz z obowiązujących przepisów prawa.</p><h2>Treści ofert</h2><p>Aktualność, cena i dostępność produktu powinny być każdorazowo potwierdzone w ogłoszeniu docelowym.</p><p><a class="btn ghost" href="index.html">← Powrót</a></p></main></body></html>
+
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Polityka prywatności — SobolTech</title><link rel="stylesheet" href="styles.css"></head><body><header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><span class="brand-mark">ST</span><span>SobolTech</span></a></div></header><main class="container legal-page"><p class="eyebrow">DOKUMENT INFORMACYJNY</p><h1>Polityka prywatności</h1><p>Ta przykładowa wersja zakłada, że strona nie posiada formularzy, kont użytkowników, newslettera ani własnego systemu płatności.</p><h2>1. Dane użytkowników</h2><p>Strona sama w sobie nie wymaga podawania danych osobowych. Po kliknięciu odnośnika do zewnętrznej platformy użytkownik podlega zasadom prywatności tej platformy.</p><h2>2. Pliki cookies</h2><p>Jeżeli nie dodasz narzędzi analitycznych, reklamowych ani innych skryptów śledzących, zakres użycia cookies może być minimalny. Po dodaniu takich usług należy uzupełnić ten dokument oraz wdrożyć odpowiedni mechanizm zgód.</p><h2>3. Kontakt</h2><p>Uzupełnij tę sekcję własnym adresem e-mail, jeżeli chcesz umożliwić kontakt bezpośredni.</p><p><a class="btn ghost" href="index.html">← Powrót</a></p></main></body></html>
+
+// EDYTUJ TYLKO TEN PLIK, ABY DODAWAĆ / ZMIENIAĆ OFERTY.
+// Platforma: "OLX", "Allegro Lokalnie", "Vinted" lub dowolna inna.
+const PRODUCTS = [
+  {
+    title: "Przykładowy laptop",
+    category: "Laptopy",
+    platform: "OLX",
+    price: "899 zł",
+    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1200&q=80",
+    description: "W pełni sprawny, przetestowany. Dokładne parametry wpisz tutaj.",
+    url: "https://www.olx.pl/"
+  },
+  {
+    title: "Przykładowy dysk SSD 512 GB",
+    category: "Dyski",
+    platform: "Allegro Lokalnie",
+    price: "99 zł",
+    image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=1200&q=80",
+    description: "Stan bardzo dobry. SMART i testy możesz opisać tutaj.",
+    url: "https://allegrolokalnie.pl/"
+  },
+  {
+    title: "Przykładowe akcesorium komputerowe",
+    category: "Akcesoria",
+    platform: "Vinted",
+    price: "49 zł",
+    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1200&q=80",
+    description: "Dodaj krótki, konkretny opis i najważniejsze informacje.",
+    url: "https://www.vinted.pl/"
+  }
+];
+
+SOBOLTECH — GOTOWA STRONA-KATALOG
+
+1. Uruchomienie lokalne:
+   - rozpakuj folder,
+   - otwórz index.html w przeglądarce.
+
+2. Dodawanie ofert:
+   - otwórz plik products.js w Notatniku / Notepad++ / VS Code,
+   - skopiuj jeden blok produktu,
+   - zmień title, category, platform, price, image, description i url,
+   - zapisz plik i odśwież stronę.
+
+3. Hosting:
+   Strona jest statyczna, więc możesz ją wrzucić m.in. na GitHub Pages, Netlify, Cloudflare Pages, Vercel albo zwykły hosting WWW.
+
+4. Domena:
+   Po zakupie domeny można podpiąć ją do hostingu, np. soboltech.pl / sobol-serwis.pl / sobolparts.pl.
+
+5. Ważne:
+   - nie używaj logotypów OLX / Allegro / Vinted bez upewnienia się co do zasad ich użycia,
+   - jeśli dodasz formularz, analitykę, newsletter, reklamy lub marketingowe cookies, zaktualizuj politykę prywatności i mechanizmy zgód,
+   - jeśli sprzedaż ma charakter zorganizowany i zarobkowy, sprawdź obowiązki dla działalności nierejestrowanej/JDG.
+
+:root{
+  --bg:#0a0d12;--panel:#111722;--panel2:#161d29;--text:#f4f7fb;--muted:#9ea9b8;--line:#263042;--accent:#61dafb;--accent2:#8bf3c7;--max:1180px
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}a{color:inherit;text-decoration:none}.container{width:min(var(--max),calc(100% - 36px));margin:auto}.site-header{position:sticky;top:0;z-index:10;background:rgba(10,13,18,.84);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}.nav-wrap{height:72px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:1.08rem}.brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#071014;font-weight:900}.site-header nav{display:flex;gap:26px}.site-header nav a{color:#cbd3de}.site-header nav a:hover{color:#fff}.menu-btn{display:none;background:transparent;border:0;color:#fff;font-size:1.4rem}.hero{padding:90px 0 76px;background:radial-gradient(circle at 80% 10%,rgba(97,218,251,.12),transparent 35%),radial-gradient(circle at 20% 10%,rgba(139,243,199,.08),transparent 28%)}.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:50px;align-items:center}.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.16em;color:var(--accent);margin:0 0 12px}.hero h1{font-size:clamp(2.5rem,6vw,5.2rem);line-height:.98;margin:0 0 24px;max-width:900px}.hero-text{max-width:720px;color:var(--muted);font-size:1.08rem}.hero-actions{display:flex;gap:12px;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 18px;border-radius:12px;font-weight:800;border:1px solid var(--line);transition:.2s}.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#061012;border:0}.btn.primary:hover{transform:translateY(-1px);filter:brightness(1.05)}.btn.ghost:hover{background:#151c26}.trust-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:30px;color:#b9c3d0;font-size:.91rem}.hero-card{background:linear-gradient(180deg,#141b26,#0f141d);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 20px 70px rgba(0,0,0,.25)}.hero-card h2{margin:10px 0}.hero-card p{color:var(--muted)}.status-dot{width:12px;height:12px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 7px rgba(139,243,199,.1)}.catalog{padding:82px 0}.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:24px}.section-head h2,.info-section h2,.about h2,.contact h2{font-size:clamp(2rem,4vw,3rem);margin:0}.count-badge{padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.9rem}.filters{display:grid;grid-template-columns:1.5fr .7fr .7fr;gap:12px;margin-bottom:28px}.filters input,.filters select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:13px 14px;border-radius:12px;outline:none}.filters input:focus,.filters select:focus{border-color:#4d99ad}.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.product-card{overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column}.product-card img{width:100%;height:220px;object-fit:cover;background:#0d1118}.product-body{padding:18px;display:flex;flex-direction:column;gap:12px;flex:1}.meta{display:flex;gap:8px;flex-wrap:wrap}.chip{font-size:.72rem;padding:5px 8px;border:1px solid var(--line);border-radius:999px;color:#b9c4d2}.product-card h3{margin:0;font-size:1.12rem}.desc{color:var(--muted);font-size:.92rem;margin:0}.price{font-size:1.25rem;font-weight:900;margin-top:auto}.product-actions{display:flex;gap:8px}.product-actions .btn{flex:1;padding:11px}.empty{grid-column:1/-1;padding:50px;text-align:center;border:1px dashed var(--line);border-radius:16px;color:var(--muted)}.info-section{padding:80px 0;background:#0d1118;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}.steps article{background:var(--panel);border:1px solid var(--line);padding:24px;border-radius:18px}.steps span{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#17222d;color:var(--accent);font-weight:900}.steps p{color:var(--muted)}.about{padding:80px 0}.about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:50px;align-items:start}.about-grid>p{color:var(--muted);font-size:1.05rem;margin-top:38px}.contact{padding:20px 0 90px}.contact-card{background:linear-gradient(135deg,#131d28,#10161f);border:1px solid var(--line);border-radius:22px;padding:30px;display:flex;align-items:center;justify-content:space-between;gap:25px}.contact-card p{color:var(--muted);max-width:760px}footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted)}.footer-wrap{display:grid;grid-template-columns:1fr auto auto;gap:24px;align-items:center}.footer-wrap p{margin:3px 0}.footer-links{display:flex;gap:18px}.legal-page{padding:70px 0;max-width:850px}.legal-page h1{font-size:2.6rem}.legal-page h2{margin-top:32px}.legal-page p,.legal-page li{color:#b6c0cc}
+@media(max-width:900px){.hero-grid,.about-grid{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.steps{grid-template-columns:1fr}.footer-wrap{grid-template-columns:1fr}.hero{padding-top:64px}}
+@media(max-width:640px){.menu-btn{display:block}.site-header nav{display:none;position:absolute;top:72px;left:0;right:0;background:#0e131b;border-bottom:1px solid var(--line);padding:18px;flex-direction:column}.site-header nav.open{display:flex}.product-grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr}.filters input{grid-column:auto}.hero h1{font-size:2.6rem}.contact-card{align-items:flex-start;flex-direction:column}.trust-row{flex-direction:column;gap:8px}.footer-links{flex-direction:column;gap:8px}}
