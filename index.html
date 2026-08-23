@@ -3,23 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Prywatny katalog ofert sprzętu komputerowego, laptopów, części i elektroniki." />
-  <title>SobolTech — sprzęt, części i elektronika</title>
+  <meta name="description" content="SobolTech24 — prywatny katalog sprzętu komputerowego, laptopów, części, elektroniki i aktualnych ofert sprzedażowych." />
+  <meta name="theme-color" content="#071017" />
+  <title>SobolTech24 — sprzęt, części i elektronika</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="#start" aria-label="SobolTech — strona główna">
-        <span class="brand-mark">ST</span>
-        <span>SobolTech</span>
+      <a class="brand" href="#start" aria-label="SobolTech24 — strona główna">
+        <img class="brand-logo" src="logo.svg" alt="" width="44" height="44" />
+        <span class="brand-copy"><strong>SobolTech24</strong><small>sprzęt • części • elektronika</small></span>
       </a>
-      <button class="menu-btn" id="menuBtn" aria-label="Otwórz menu">☰</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Otwórz menu" aria-expanded="false">☰</button>
       <nav id="mainNav">
         <a href="#oferty">Oferty</a>
-        <a href="#katalogi">Katalogi</a>
-        <a href="#jak-kupic">Jak kupić</a>
-        <a href="#o-mnie">O mnie</a>
+        <a href="katalogi.html">Katalogi</a>
+        <a href="#sprzedane">Sprzedane</a>
+        <a href="#profile">Profile</a>
         <a href="#kontakt">Kontakt</a>
       </nav>
     </div>
@@ -29,24 +31,37 @@
     <section class="hero" id="start">
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow">PRYWATNY KATALOG OFERT</p>
-          <h1>Sprzęt komputerowy, laptopy, części i elektronika.</h1>
-          <p class="hero-text">W jednym miejscu znajdziesz moje aktualne ogłoszenia. Zakup odbywa się bezpośrednio przez zewnętrzne platformy sprzedażowe.</p>
+          <p class="eyebrow">SOBOLTECH24 • PRYWATNY KATALOG OFERT</p>
+          <h1>Sprzęt komputerowy, części i elektronika w jednym miejscu.</h1>
+          <p class="hero-text">Przeglądaj moje aktualne ogłoszenia, katalogi OLX i Allegro Lokalnie oraz archiwum sprzedanych przedmiotów. Zakup finalizujesz bezpośrednio na platformie sprzedażowej.</p>
           <div class="hero-actions">
             <a class="btn primary" href="#oferty">Zobacz oferty</a>
-            <a class="btn ghost" href="#katalogi">Katalogi sprzedażowe</a>
+            <a class="btn ghost" href="katalogi.html">Otwórz katalogi</a>
           </div>
           <div class="trust-row">
-            <span>✓ czytelne opisy</span>
-            <span>✓ zdjęcia i parametry</span>
-            <span>✓ zakup przez platformę zewnętrzną</span>
+            <span>✓ konkretne opisy i parametry</span>
+            <span>✓ status dostępności</span>
+            <span>✓ link bezpośrednio do aukcji</span>
           </div>
         </div>
         <aside class="hero-card">
-          <div class="status-dot"></div>
-          <h2>Aktualne ogłoszenia</h2>
-          <p>Oferty są prezentowane na tej stronie, a finalizacja zakupu następuje w OLX, Allegro Lokalnie, Vinted lub innej wskazanej platformie.</p>
+          <div class="hero-card-top"><span class="status-dot"></span><span>Strona aktywna</span></div>
+          <h2>Centrum moich ofert</h2>
+          <p>OLX, Allegro Lokalnie i Vinted — zebrane w jednym katalogu, z filtrowaniem i szybkim przejściem do zakupu.</p>
+          <div class="mini-stats">
+            <div><b id="heroActiveCount">0</b><span>aktywnych</span></div>
+            <div><b id="heroCatalogCount">0</b><span>w katalogach</span></div>
+          </div>
         </aside>
+      </div>
+    </section>
+
+    <section class="stats-section" aria-label="Statystyki ofert">
+      <div class="container stats-grid">
+        <article><span class="stat-label">Dostępne</span><strong id="availableCount">0</strong></article>
+        <article><span class="stat-label">Zarezerwowane</span><strong id="reservedCount">0</strong></article>
+        <article><span class="stat-label">Sprzedane</span><strong id="soldCount">0</strong></article>
+        <article><span class="stat-label">Pozycje w katalogach</span><strong id="catalogCount">0</strong></article>
       </div>
     </section>
 
@@ -54,41 +69,67 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <p class="eyebrow">KATALOG</p>
-            <h2>Aktualne oferty</h2>
+            <p class="eyebrow">AKTUALNE OFERTY</p>
+            <h2>Dostępny sprzęt</h2>
+            <p class="section-copy">Filtruj po kategorii, platformie i statusie. Każda karta może pokazywać starą i aktualną cenę.</p>
           </div>
           <span id="resultsCount" class="count-badge"></span>
         </div>
 
+        <div class="category-chips" id="categoryChips" aria-label="Kategorie">
+          <button class="category-chip active" data-category="all">Wszystko</button>
+          <button class="category-chip" data-category="Laptopy">Laptopy</button>
+          <button class="category-chip" data-category="Części">Części</button>
+          <button class="category-chip" data-category="Dyski">Dyski</button>
+          <button class="category-chip" data-category="RAM">RAM</button>
+          <button class="category-chip" data-category="Telefony">Telefony</button>
+          <button class="category-chip" data-category="Akcesoria">Akcesoria</button>
+        </div>
+
         <div class="filters">
-          <input id="searchInput" type="search" placeholder="Szukaj np. laptop, SSD, RAM..." />
-          <select id="categoryFilter">
-            <option value="all">Wszystkie kategorie</option>
-          </select>
-          <select id="platformFilter">
-            <option value="all">Wszystkie platformy</option>
-          </select>
+          <label class="field search-field"><span>Szukaj</span><input id="searchInput" type="search" placeholder="np. ThinkPad, SSD, DDR4..." /></label>
+          <label class="field"><span>Platforma</span><select id="platformFilter"><option value="all">Wszystkie platformy</option></select></label>
+          <label class="field"><span>Status</span><select id="statusFilter"><option value="all">Dostępne + rezerwacje</option><option value="available">Dostępny</option><option value="reserved">Zarezerwowany</option></select></label>
         </div>
 
         <div id="productGrid" class="product-grid"></div>
       </div>
     </section>
 
-    <section class="info-section" id="katalogi">
+    <section class="catalog-cta">
+      <div class="container catalog-cta-grid">
+        <article>
+          <span class="platform-badge olx">OLX</span>
+          <h3>Katalog OLX</h3>
+          <p>Pełna lista ofert z katalogu OLX.</p>
+          <a class="btn primary" href="katalogi.html?platform=olx">Otwórz katalog</a>
+        </article>
+        <article>
+          <span class="platform-badge allegro">AL</span>
+          <h3>Katalog Allegro Lokalnie</h3>
+          <p>Aktualny katalog ofert Allegro Lokalnie.</p>
+          <a class="btn primary" href="katalogi.html?platform=allegro">Otwórz katalog</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="sold-section" id="sprzedane">
       <div class="container">
-        <p class="eyebrow">KATALOGI SPRZEDAŻOWE</p>
-        <h2>Pełne katalogi ofert</h2>
-        <div class="steps">
-          <article>
-            <h3>Katalog OLX</h3>
-            <p>28 aktywnych ofert. Stan danych: 23.08.2026.</p>
-            <a class="btn primary" href="katalogi.html?platform=olx">Otwórz katalog OLX</a>
-          </article>
-          <article>
-            <h3>Katalog Allegro Lokalnie</h3>
-            <p>29 aktywnych ofert. Stan danych: 23.08.2026.</p>
-            <a class="btn primary" href="katalogi.html?platform=allegro">Otwórz katalog Allegro</a>
-          </article>
+        <div class="section-head">
+          <div><p class="eyebrow">ARCHIWUM</p><h2>Sprzedane</h2><p class="section-copy">Przedmioty oznaczone jako sprzedane automatycznie trafiają do tej sekcji.</p></div>
+          <span id="soldResultsCount" class="count-badge"></span>
+        </div>
+        <div id="soldGrid" class="product-grid sold-grid"></div>
+      </div>
+    </section>
+
+    <section class="profiles" id="profile">
+      <div class="container">
+        <div class="section-head"><div><p class="eyebrow">SPRZEDAŻ</p><h2>Moje profile</h2><p class="section-copy">Możesz również przejść bezpośrednio do moich profili na platformach sprzedażowych.</p></div></div>
+        <div class="profile-grid">
+          <a class="profile-card" href="https://www.olx.pl/oferty/uzytkownik/4QzZV/" target="_blank" rel="noopener noreferrer"><span class="profile-icon">O</span><div><strong>OLX</strong><small>Aktualne ogłoszenia i kontakt</small></div><span class="arrow">↗</span></a>
+          <a class="profile-card" href="https://allegrolokalnie.pl/uzytkownik/Sobolll_" target="_blank" rel="noopener noreferrer"><span class="profile-icon">A</span><div><strong>Allegro Lokalnie</strong><small>Hubert (Sobolll_)</small></div><span class="arrow">↗</span></a>
+          <a class="profile-card" href="https://www.vinted.pl/member/3175187738-huberts2003" target="_blank" rel="noopener noreferrer"><span class="profile-icon">V</span><div><strong>Vinted</strong><small>huberts2003</small></div><span class="arrow">↗</span></a>
         </div>
       </div>
     </section>
@@ -98,51 +139,49 @@
         <p class="eyebrow">PROSTY PROCES</p>
         <h2>Jak kupić?</h2>
         <div class="steps">
-          <article><span>1</span><h3>Wybierz ofertę</h3><p>Przejrzyj parametry, opis oraz zdjęcia produktu.</p></article>
-          <article><span>2</span><h3>Przejdź do ogłoszenia</h3><p>Kliknij przycisk prowadzący do OLX, Allegro Lokalnie, Vinted lub innej platformy.</p></article>
-          <article><span>3</span><h3>Kup na platformie</h3><p>Kontakt, płatność i wysyłka odbywają się zgodnie z zasadami wskazanej platformy.</p></article>
+          <article><span>1</span><h3>Wybierz przedmiot</h3><p>Sprawdź kategorię, opis, cenę i aktualny status.</p></article>
+          <article><span>2</span><h3>Otwórz aukcję</h3><p>Przejdź bezpośrednio do OLX, Allegro Lokalnie, Vinted lub innej wskazanej platformy.</p></article>
+          <article><span>3</span><h3>Finalizuj na platformie</h3><p>Kontakt, płatność i wysyłka odbywają się zgodnie z zasadami platformy zewnętrznej.</p></article>
         </div>
+      </div>
+    </section>
+
+    <section class="contact" id="kontakt">
+      <div class="container contact-layout">
+        <div class="contact-intro">
+          <p class="eyebrow">KONTAKT</p>
+          <h2>Napisz w sprawie oferty</h2>
+          <p>Formularz przygotuje wiadomość, skopiuje ją do schowka i otworzy wybraną platformę. Wklej treść w czacie sprzedającego.</p>
+          <div class="contact-note">Nie zbieram danych z tego formularza na serwerze — strona działa statycznie.</div>
+        </div>
+        <form id="contactForm" class="contact-form">
+          <label class="field"><span>Twoje imię</span><input id="contactName" name="name" maxlength="80" placeholder="np. Adam" /></label>
+          <label class="field"><span>Platforma kontaktu</span><select id="contactPlatform" name="platform"><option value="olx">OLX</option><option value="allegro">Allegro Lokalnie</option><option value="vinted">Vinted</option></select></label>
+          <label class="field full"><span>Wiadomość</span><textarea id="contactMessage" name="message" rows="5" required maxlength="1500" placeholder="Dzień dobry, piszę w sprawie..."></textarea></label>
+          <button class="btn primary full" type="submit">Skopiuj wiadomość i otwórz profil</button>
+          <p id="contactStatus" class="form-status full" role="status"></p>
+        </form>
       </div>
     </section>
 
     <section class="about" id="o-mnie">
       <div class="container about-grid">
-        <div>
-          <p class="eyebrow">O STRONIE</p>
-          <h2>Prywatny katalog sprzętu</h2>
-        </div>
-        <p>Ta strona służy do prezentacji moich ogłoszeń i ułatwia znalezienie wszystkich ofert w jednym miejscu. Nie jest oficjalną stroną ani partnerem OLX, Allegro Lokalnie, Vinted ani innych platform, do których prowadzą linki.</p>
-      </div>
-    </section>
-
-    <section class="contact" id="kontakt">
-      <div class="container contact-card">
-        <div>
-          <p class="eyebrow">KONTAKT</p>
-          <h2>Masz pytanie o ofertę?</h2>
-          <p>Najbezpieczniej skontaktować się ze mną przez wiadomość na platformie, na której znajduje się dane ogłoszenie.</p>
-        </div>
-        <a class="btn primary" href="#oferty">Przejdź do ofert</a>
+        <div><p class="eyebrow">O STRONIE</p><h2>SobolTech24</h2></div>
+        <p>Strona służy do prezentacji prywatnych ogłoszeń oraz katalogów sprzedażowych w jednym miejscu. Nie jest oficjalną stroną ani partnerem OLX, Allegro Lokalnie, Vinted ani innych platform, do których prowadzą linki.</p>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container footer-wrap">
-      <div>
-        <strong>SobolTech</strong>
-        <p>Prywatny katalog ofert.</p>
-      </div>
-      <div class="footer-links">
-        <a href="katalogi.html">Katalogi sprzedażowe</a>
-        <a href="privacy.html">Polityka prywatności</a>
-        <a href="legal.html">Informacje prawne</a>
-      </div>
-      <small>© <span id="year"></span> SobolTech</small>
+      <a class="footer-brand" href="#start"><img src="logo.svg" alt="" width="36" height="36" /><div><strong>SobolTech24</strong><p>Prywatny katalog ofert.</p></div></a>
+      <div class="footer-links"><a href="katalogi.html">Katalogi</a><a href="privacy.html">Polityka prywatności</a><a href="legal.html">Informacje prawne</a></div>
+      <small>© <span id="year"></span> SobolTech24</small>
     </div>
   </footer>
 
   <script src="products.js"></script>
+  <script src="katalogi-data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
