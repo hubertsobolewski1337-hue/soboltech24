@@ -8,6 +8,7 @@
   <title>SobolTech24 — sprzęt, części i elektronika</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="details.css" />
 </head>
 <body>
   <header class="site-header">
@@ -71,7 +72,7 @@
           <div>
             <p class="eyebrow">AKTUALNE OFERTY</p>
             <h2>Dostępny sprzęt</h2>
-            <p class="section-copy">Filtruj po kategorii, platformie i statusie. Każda karta może pokazywać starą i aktualną cenę.</p>
+            <p class="section-copy">Filtruj po kategorii, platformie i statusie. Każda karta pokazuje cenę, parametry i dostępne zdjęcia.</p>
           </div>
           <span id="resultsCount" class="count-badge"></span>
         </div>
@@ -98,27 +99,14 @@
 
     <section class="catalog-cta">
       <div class="container catalog-cta-grid">
-        <article>
-          <span class="platform-badge olx">OLX</span>
-          <h3>Katalog OLX</h3>
-          <p>Pełna lista ofert z katalogu OLX.</p>
-          <a class="btn primary" href="katalogi.html?platform=olx">Otwórz katalog</a>
-        </article>
-        <article>
-          <span class="platform-badge allegro">AL</span>
-          <h3>Katalog Allegro Lokalnie</h3>
-          <p>Aktualny katalog ofert Allegro Lokalnie.</p>
-          <a class="btn primary" href="katalogi.html?platform=allegro">Otwórz katalog</a>
-        </article>
+        <article><span class="platform-badge olx">OLX</span><h3>Katalog OLX</h3><p>Pełna lista ofert z katalogu OLX.</p><a class="btn primary" href="katalogi.html?platform=olx">Otwórz katalog</a></article>
+        <article><span class="platform-badge allegro">AL</span><h3>Katalog Allegro Lokalnie</h3><p>Aktualny katalog ofert Allegro Lokalnie.</p><a class="btn primary" href="katalogi.html?platform=allegro">Otwórz katalog</a></article>
       </div>
     </section>
 
     <section class="sold-section" id="sprzedane">
       <div class="container">
-        <div class="section-head">
-          <div><p class="eyebrow">ARCHIWUM</p><h2>Sprzedane</h2><p class="section-copy">Przedmioty oznaczone jako sprzedane automatycznie trafiają do tej sekcji.</p></div>
-          <span id="soldResultsCount" class="count-badge"></span>
-        </div>
+        <div class="section-head"><div><p class="eyebrow">ARCHIWUM</p><h2>Sprzedane</h2><p class="section-copy">Przedmioty oznaczone jako sprzedane automatycznie trafiają do tej sekcji.</p></div><span id="soldResultsCount" class="count-badge"></span></div>
         <div id="soldGrid" class="product-grid sold-grid"></div>
       </div>
     </section>
@@ -135,50 +123,29 @@
     </section>
 
     <section class="info-section" id="jak-kupic">
-      <div class="container">
-        <p class="eyebrow">PROSTY PROCES</p>
-        <h2>Jak kupić?</h2>
-        <div class="steps">
-          <article><span>1</span><h3>Wybierz przedmiot</h3><p>Sprawdź kategorię, opis, cenę i aktualny status.</p></article>
-          <article><span>2</span><h3>Otwórz aukcję</h3><p>Przejdź bezpośrednio do OLX, Allegro Lokalnie, Vinted lub innej wskazanej platformy.</p></article>
-          <article><span>3</span><h3>Finalizuj na platformie</h3><p>Kontakt, płatność i wysyłka odbywają się zgodnie z zasadami platformy zewnętrznej.</p></article>
-        </div>
-      </div>
+      <div class="container"><p class="eyebrow">PROSTY PROCES</p><h2>Jak kupić?</h2><div class="steps">
+        <article><span>1</span><h3>Wybierz przedmiot</h3><p>Sprawdź kategorię, opis, cenę, parametry i aktualny status.</p></article>
+        <article><span>2</span><h3>Otwórz aukcję</h3><p>Przejdź bezpośrednio do OLX, Allegro Lokalnie, Vinted lub innej wskazanej platformy.</p></article>
+        <article><span>3</span><h3>Finalizuj na platformie</h3><p>Kontakt, płatność i wysyłka odbywają się zgodnie z zasadami platformy zewnętrznej.</p></article>
+      </div></div>
     </section>
 
     <section class="contact" id="kontakt">
       <div class="container contact-layout">
-        <div class="contact-intro">
-          <p class="eyebrow">KONTAKT</p>
-          <h2>Napisz w sprawie oferty</h2>
-          <p>Formularz przygotuje wiadomość, skopiuje ją do schowka i otworzy wybraną platformę. Wklej treść w czacie sprzedającego.</p>
-          <div class="contact-note">Nie zbieram danych z tego formularza na serwerze — strona działa statycznie.</div>
-        </div>
+        <div class="contact-intro"><p class="eyebrow">KONTAKT</p><h2>Napisz w sprawie oferty</h2><p>Formularz przygotuje wiadomość, skopiuje ją do schowka i otworzy wybraną platformę. Wklej treść w czacie sprzedającego.</p><div class="contact-note">Nie zbieram danych z tego formularza na serwerze — strona działa statycznie.</div></div>
         <form id="contactForm" class="contact-form">
           <label class="field"><span>Twoje imię</span><input id="contactName" name="name" maxlength="80" placeholder="np. Adam" /></label>
           <label class="field"><span>Platforma kontaktu</span><select id="contactPlatform" name="platform"><option value="olx">OLX</option><option value="allegro">Allegro Lokalnie</option><option value="vinted">Vinted</option></select></label>
           <label class="field full"><span>Wiadomość</span><textarea id="contactMessage" name="message" rows="5" required maxlength="1500" placeholder="Dzień dobry, piszę w sprawie..."></textarea></label>
-          <button class="btn primary full" type="submit">Skopiuj wiadomość i otwórz profil</button>
-          <p id="contactStatus" class="form-status full" role="status"></p>
+          <button class="btn primary full" type="submit">Skopiuj wiadomość i otwórz profil</button><p id="contactStatus" class="form-status full" role="status"></p>
         </form>
       </div>
     </section>
 
-    <section class="about" id="o-mnie">
-      <div class="container about-grid">
-        <div><p class="eyebrow">O STRONIE</p><h2>SobolTech24</h2></div>
-        <p>Strona służy do prezentacji prywatnych ogłoszeń oraz katalogów sprzedażowych w jednym miejscu. Nie jest oficjalną stroną ani partnerem OLX, Allegro Lokalnie, Vinted ani innych platform, do których prowadzą linki.</p>
-      </div>
-    </section>
+    <section class="about" id="o-mnie"><div class="container about-grid"><div><p class="eyebrow">O STRONIE</p><h2>SobolTech24</h2></div><p>Strona służy do prezentacji prywatnych ogłoszeń oraz katalogów sprzedażowych w jednym miejscu. Nie jest oficjalną stroną ani partnerem OLX, Allegro Lokalnie, Vinted ani innych platform, do których prowadzą linki.</p></div></section>
   </main>
 
-  <footer>
-    <div class="container footer-wrap">
-      <a class="footer-brand" href="#start"><img src="logo.svg" alt="" width="36" height="36" /><div><strong>SobolTech24</strong><p>Prywatny katalog ofert.</p></div></a>
-      <div class="footer-links"><a href="katalogi.html">Katalogi</a><a href="privacy.html">Polityka prywatności</a><a href="legal.html">Informacje prawne</a></div>
-      <small>© <span id="year"></span> SobolTech24</small>
-    </div>
-  </footer>
+  <footer><div class="container footer-wrap"><a class="footer-brand" href="#start"><img src="logo.svg" alt="" width="36" height="36" /><div><strong>SobolTech24</strong><p>Prywatny katalog ofert.</p></div></a><div class="footer-links"><a href="katalogi.html">Katalogi</a><a href="privacy.html">Polityka prywatności</a><a href="legal.html">Informacje prawne</a></div><small>© <span id="year"></span> SobolTech24</small></div></footer>
 
   <script src="products.js"></script>
   <script src="katalogi-data.js"></script>
