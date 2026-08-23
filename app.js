@@ -1,51 +1,143 @@
 const grid = document.getElementById('productGrid');
+const soldGrid = document.getElementById('soldGrid');
 const searchInput = document.getElementById('searchInput');
-const categoryFilter = document.getElementById('categoryFilter');
 const platformFilter = document.getElementById('platformFilter');
+const statusFilter = document.getElementById('statusFilter');
 const resultsCount = document.getElementById('resultsCount');
+const soldResultsCount = document.getElementById('soldResultsCount');
+const categoryChips = document.getElementById('categoryChips');
 const menuBtn = document.getElementById('menuBtn');
 const mainNav = document.getElementById('mainNav');
+const contactForm = document.getElementById('contactForm');
+const contactStatus = document.getElementById('contactStatus');
+
+const STATUS_LABELS = { available: 'Dostępny', reserved: 'Zarezerwowany', sold: 'Sprzedany' };
+const PROFILE_URLS = {
+  olx: 'https://www.olx.pl/oferty/uzytkownik/4QzZV/',
+  allegro: 'https://allegrolokalnie.pl/uzytkownik/Sobolll_',
+  vinted: 'https://www.vinted.pl/member/3175187738-huberts2003'
+};
+let selectedCategory = 'all';
 
 document.getElementById('year').textContent = new Date().getFullYear();
-
-const uniq = arr => [...new Set(arr)].sort((a,b)=>a.localeCompare(b,'pl'));
-uniq(PRODUCTS.map(p=>p.category)).forEach(v=>categoryFilter.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`));
-uniq(PRODUCTS.map(p=>p.platform)).forEach(v=>platformFilter.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`));
 
 function escapeHtml(s=''){
   return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
+function safeUrl(url=''){
+  try {
+    const u = new URL(url, location.origin);
+    return ['http:','https:'].includes(u.protocol) ? u.href : '#';
+  } catch { return '#'; }
+}
+function uniq(arr){ return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pl')); }
+function statusOf(p){ return p.status || 'available'; }
+function currentPriceOf(p){ return p.currentPrice || p.price || ''; }
+function oldPriceOf(p){ return p.oldPrice || ''; }
+function discountPercent(oldPrice,currentPrice){
+  const oldNum = Number(String(oldPrice).replace(/[^0-9,.-]/g,'').replace(',','.'));
+  const curNum = Number(String(currentPrice).replace(/[^0-9,.-]/g,'').replace(',','.'));
+  if(!oldNum || !curNum || curNum >= oldNum) return '';
+  return Math.round((1-curNum/oldNum)*100);
+}
+
+uniq(PRODUCTS.map(p=>p.platform)).forEach(v=>platformFilter.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`));
+
+function productCard(p, sold=false){
+  const status = statusOf(p);
+  const currentPrice = currentPriceOf(p);
+  const oldPrice = oldPriceOf(p);
+  const discount = discountPercent(oldPrice,currentPrice);
+  const img = p.image ? `<img src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}" loading="lazy" />` : `<div class="product-placeholder" aria-hidden="true">ST24</div>`;
+  return `
+    <article class="product-card ${sold?'sold-card':''}">
+      ${img}
+      <div class="product-body">
+        <div class="meta">
+          <span class="chip">${escapeHtml(p.category || 'Inne')}</span>
+          <span class="chip">${escapeHtml(p.platform || 'Platforma')}</span>
+          <span class="status-chip status-${escapeHtml(status)}">${escapeHtml(STATUS_LABELS[status] || status)}</span>
+        </div>
+        <h3>${escapeHtml(p.title)}</h3>
+        <p class="desc">${escapeHtml(p.description || '')}</p>
+        <div class="price-row">
+          <span class="price">${escapeHtml(currentPrice)}</span>
+          ${oldPrice ? `<span class="old-price">${escapeHtml(oldPrice)}</span>` : ''}
+          ${discount ? `<span class="discount">-${discount}%</span>` : ''}
+        </div>
+        ${p.url && status !== 'sold' ? `<div class="product-actions"><a class="btn primary" href="${escapeHtml(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer">Zobacz ogłoszenie</a></div>` : ''}
+      </div>
+    </article>`;
+}
 
 function render(){
   const q = searchInput.value.trim().toLowerCase();
-  const cat = categoryFilter.value;
   const plat = platformFilter.value;
-  const items = PRODUCTS.filter(p => {
-    const blob = `${p.title} ${p.category} ${p.platform} ${p.description}`.toLowerCase();
-    return (!q || blob.includes(q)) && (cat==='all' || p.category===cat) && (plat==='all' || p.platform===plat);
+  const stat = statusFilter.value;
+  const activeProducts = PRODUCTS.filter(p=>statusOf(p)!=='sold');
+  const items = activeProducts.filter(p => {
+    const blob = `${p.title||''} ${p.category||''} ${p.platform||''} ${p.description||''}`.toLowerCase();
+    return (!q || blob.includes(q)) &&
+      (selectedCategory==='all' || p.category===selectedCategory) &&
+      (plat==='all' || p.platform===plat) &&
+      (stat==='all' || statusOf(p)===stat);
   });
-  resultsCount.textContent = `${items.length} ${items.length===1?'oferta':'oferty'}`;
-  if(!items.length){
-    grid.innerHTML = '<div class="empty">Brak ofert pasujących do wybranych filtrów.</div>';
-    return;
-  }
-  grid.innerHTML = items.map(p => `
-    <article class="product-card">
-      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" />
-      <div class="product-body">
-        <div class="meta"><span class="chip">${escapeHtml(p.category)}</span><span class="chip">${escapeHtml(p.platform)}</span></div>
-        <h3>${escapeHtml(p.title)}</h3>
-        <p class="desc">${escapeHtml(p.description)}</p>
-        <div class="price">${escapeHtml(p.price)}</div>
-        <div class="product-actions">
-          <a class="btn primary" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">Zobacz ogłoszenie</a>
-        </div>
-      </div>
-    </article>
-  `).join('');
+  resultsCount.textContent = `${items.length} ${items.length===1?'oferta':'ofert'}`;
+  grid.innerHTML = items.length ? items.map(p=>productCard(p,false)).join('') : '<div class="empty">Brak ofert pasujących do wybranych filtrów. Pełne zestawienia znajdziesz w katalogach OLX i Allegro Lokalnie.</div>';
 }
 
-[searchInput, categoryFilter, platformFilter].forEach(el => el.addEventListener('input', render));
-menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
-mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click',()=>mainNav.classList.remove('open')));
+function renderSold(){
+  const sold = PRODUCTS.filter(p=>statusOf(p)==='sold');
+  soldResultsCount.textContent = `${sold.length} ${sold.length===1?'pozycja':'pozycji'}`;
+  soldGrid.innerHTML = sold.length ? sold.map(p=>productCard(p,true)).join('') : '<div class="empty">Na razie brak produktów oznaczonych jako sprzedane.</div>';
+}
+
+function updateStats(){
+  const available = PRODUCTS.filter(p=>statusOf(p)==='available').length;
+  const reserved = PRODUCTS.filter(p=>statusOf(p)==='reserved').length;
+  const sold = PRODUCTS.filter(p=>statusOf(p)==='sold').length;
+  const catalogCount = (typeof CATALOGS !== 'undefined') ? Object.values(CATALOGS).reduce((sum,arr)=>sum + (Array.isArray(arr)?arr.length:0),0) : 0;
+  document.getElementById('availableCount').textContent = available;
+  document.getElementById('reservedCount').textContent = reserved;
+  document.getElementById('soldCount').textContent = sold;
+  document.getElementById('catalogCount').textContent = catalogCount;
+  document.getElementById('heroActiveCount').textContent = available + reserved;
+  document.getElementById('heroCatalogCount').textContent = catalogCount;
+}
+
+[searchInput, platformFilter, statusFilter].forEach(el=>el.addEventListener('input',render));
+categoryChips.addEventListener('click',e=>{
+  const btn = e.target.closest('[data-category]');
+  if(!btn) return;
+  selectedCategory = btn.dataset.category;
+  categoryChips.querySelectorAll('.category-chip').forEach(x=>x.classList.toggle('active',x===btn));
+  render();
+});
+
+menuBtn.addEventListener('click',()=>{
+  const open = mainNav.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded',String(open));
+});
+mainNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  mainNav.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded','false');
+}));
+
+contactForm.addEventListener('submit', async e=>{
+  e.preventDefault();
+  const name = document.getElementById('contactName').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+  const platform = document.getElementById('contactPlatform').value;
+  const text = `${name ? name + ': ' : ''}${message}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    contactStatus.textContent = 'Wiadomość skopiowana. Otwieram wybraną platformę — wklej tekst w czacie.';
+  } catch {
+    contactStatus.textContent = 'Nie udało się automatycznie skopiować tekstu. Zaznacz wiadomość ręcznie i wklej ją na platformie.';
+  }
+  window.open(PROFILE_URLS[platform] || PROFILE_URLS.olx,'_blank','noopener');
+});
+
+updateStats();
 render();
+renderSold();
