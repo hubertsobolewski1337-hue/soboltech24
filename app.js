@@ -40,21 +40,47 @@ function discountPercent(oldPrice,currentPrice){
   if(!oldNum || !curNum || curNum >= oldNum) return '';
   return Math.round((1-curNum/oldNum)*100);
 }
+function inferCategory(title=''){
+  const t = title.toLowerCase();
+  if(/pamięć ram|\bram\b|ddr[2345]/i.test(title)) return 'RAM';
+  if(/\bssd\b|\bhdd\b|dysk/i.test(title)) return 'Dyski';
+  if(/laptop|notebook/i.test(title)) return 'Laptopy';
+  if(/telefon|smartfon|iphone|galaxy/i.test(title)) return 'Telefony';
+  if(/płyta|procesor|touchpad|matryca|bateria|karta wi-?fi|karta sieciowa|moduł bluetooth|modem|chłodzeni|wentylator|radiator/i.test(title)) return 'Części';
+  return 'Akcesoria';
+}
+function catalogProducts(){
+  if(typeof CATALOGS === 'undefined') return [];
+  return Object.entries(CATALOGS).flatMap(([platform,items]) => (Array.isArray(items)?items:[]).map(item=>({
+    title:item.title,
+    category:inferCategory(item.title),
+    platform:platform==='olx'?'OLX':'Allegro Lokalnie',
+    status:'available',
+    currentPrice:item.price,
+    description:Array.isArray(item.bullets)?item.bullets.slice(0,2).join(' '):'',
+    url:item.link || '',
+    image:''
+  })));
+}
+function productKey(p){ return `${String(p.platform||'').toLowerCase()}|${String(p.title||'').trim().toLowerCase()}`; }
+const CATALOG_PRODUCTS = catalogProducts();
+const MANUAL_KEYS = new Set(PRODUCTS.map(productKey));
+const SOURCE_PRODUCTS = [...PRODUCTS, ...CATALOG_PRODUCTS.filter(p=>!MANUAL_KEYS.has(productKey(p)))];
 
-uniq(PRODUCTS.map(p=>p.platform)).forEach(v=>platformFilter.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`));
+uniq(SOURCE_PRODUCTS.map(p=>p.platform)).forEach(v=>platformFilter.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`));
 
 function productCard(p, sold=false){
   const status = statusOf(p);
   const currentPrice = currentPriceOf(p);
   const oldPrice = oldPriceOf(p);
   const discount = discountPercent(oldPrice,currentPrice);
-  const img = p.image ? `<img src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}" loading="lazy" />` : `<div class="product-placeholder" aria-hidden="true">ST24</div>`;
+  const img = p.image ? `<img src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}" loading="lazy" />` : `<div class="product-placeholder" aria-hidden="true"><span>ST24</span><small>${escapeHtml(p.platform||'Oferta')}</small></div>`;
   return `
     <article class="product-card ${sold?'sold-card':''}">
       ${img}
       <div class="product-body">
         <div class="meta">
-          <span class="chip">${escapeHtml(p.category || 'Inne')}</span>
+          <span class="chip">${escapeHtml(p.category || 'Akcesoria')}</span>
           <span class="chip">${escapeHtml(p.platform || 'Platforma')}</span>
           <span class="status-chip status-${escapeHtml(status)}">${escapeHtml(STATUS_LABELS[status] || status)}</span>
         </div>
@@ -74,7 +100,7 @@ function render(){
   const q = searchInput.value.trim().toLowerCase();
   const plat = platformFilter.value;
   const stat = statusFilter.value;
-  const activeProducts = PRODUCTS.filter(p=>statusOf(p)!=='sold');
+  const activeProducts = SOURCE_PRODUCTS.filter(p=>statusOf(p)!=='sold');
   const items = activeProducts.filter(p => {
     const blob = `${p.title||''} ${p.category||''} ${p.platform||''} ${p.description||''}`.toLowerCase();
     return (!q || blob.includes(q)) &&
@@ -83,20 +109,20 @@ function render(){
       (stat==='all' || statusOf(p)===stat);
   });
   resultsCount.textContent = `${items.length} ${items.length===1?'oferta':'ofert'}`;
-  grid.innerHTML = items.length ? items.map(p=>productCard(p,false)).join('') : '<div class="empty">Brak ofert pasujących do wybranych filtrów. Pełne zestawienia znajdziesz w katalogach OLX i Allegro Lokalnie.</div>';
+  grid.innerHTML = items.length ? items.map(p=>productCard(p,false)).join('') : '<div class="empty">Brak ofert pasujących do wybranych filtrów.</div>';
 }
 
 function renderSold(){
-  const sold = PRODUCTS.filter(p=>statusOf(p)==='sold');
+  const sold = SOURCE_PRODUCTS.filter(p=>statusOf(p)==='sold');
   soldResultsCount.textContent = `${sold.length} ${sold.length===1?'pozycja':'pozycji'}`;
   soldGrid.innerHTML = sold.length ? sold.map(p=>productCard(p,true)).join('') : '<div class="empty">Na razie brak produktów oznaczonych jako sprzedane.</div>';
 }
 
 function updateStats(){
-  const available = PRODUCTS.filter(p=>statusOf(p)==='available').length;
-  const reserved = PRODUCTS.filter(p=>statusOf(p)==='reserved').length;
-  const sold = PRODUCTS.filter(p=>statusOf(p)==='sold').length;
-  const catalogCount = (typeof CATALOGS !== 'undefined') ? Object.values(CATALOGS).reduce((sum,arr)=>sum + (Array.isArray(arr)?arr.length:0),0) : 0;
+  const available = SOURCE_PRODUCTS.filter(p=>statusOf(p)==='available').length;
+  const reserved = SOURCE_PRODUCTS.filter(p=>statusOf(p)==='reserved').length;
+  const sold = SOURCE_PRODUCTS.filter(p=>statusOf(p)==='sold').length;
+  const catalogCount = CATALOG_PRODUCTS.length;
   document.getElementById('availableCount').textContent = available;
   document.getElementById('reservedCount').textContent = reserved;
   document.getElementById('soldCount').textContent = sold;
