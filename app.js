@@ -8,6 +8,7 @@
   });
   try{
     await load('app-data.js');
+    await load('links-extra.js');
     await load('app-ui.js');
   }catch(err){
     console.error(err);
