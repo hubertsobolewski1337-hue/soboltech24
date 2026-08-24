@@ -1,12 +1,19 @@
 Object.assign(window.ST24_DATA.directUrls, {
+  4: 'https://allegrolokalnie.pl/oferta/dysk-hdd-seagate-st500lt012-500gb-25-7mm-sata-iii-ramka',
   5: 'https://allegrolokalnie.pl/oferta/oryginalna-bateria-toshiba-pa3536u1brs-pabas100-108v',
   6: 'https://allegrolokalnie.pl/oferta/oryginalna-bateria-asus-a32k55-108v-4400mah-47wh',
+  7: 'https://allegrolokalnie.pl/oferta/glosnik-konferencyjny-emeet-officecore-m0-plus-bluetooth-usb-jak-nowy',
+  10: 'https://allegrolokalnie.pl/oferta/matryca-samsung-ltn170x2l02-17-1440x900-ccfl-lvds-30pin-blyszczaca',
   11: 'https://allegrolokalnie.pl/oferta/karta-wifi-bluetooth-ralink-rt3290le-hp-690020001-mini-pcie',
   12: 'https://allegrolokalnie.pl/oferta/karta-wifi-atheros-ar5bxb63-toshiba-wll3141d4-mini-pcie-54-mbs',
   14: 'https://allegrolokalnie.pl/oferta/procesor-intel-core-i32370m-240-ghz-tyt',
+  17: 'https://allegrolokalnie.pl/oferta/procesor-intel-core-2-duo-t7300-200-ghz',
   18: 'https://allegrolokalnie.pl/oferta/procesor-intel-pentium-dualcore-t2130-186-ghz',
+  19: 'https://allegrolokalnie.pl/oferta/matryca-141-lg-philips-lp141wp1tlb8-1440x900-wxga-30pin',
+  21: 'https://allegrolokalnie.pl/oferta/szelki-bezpieczenstwa-protekt-p12-mx-pro-xxl-lonza-y-aw137-2x-az023',
   22: 'https://allegrolokalnie.pl/oferta/karta-wifi-ralink-rt5390-150-mbs-mini-pcie-asus',
   23: 'https://allegrolokalnie.pl/oferta/karta-sieciowa-wifi-5-bluetooth-50-realtek-rtl8822ce-hp-m2',
   24: 'https://allegrolokalnie.pl/oferta/karta-wifi-intel-300-mbs-245-ghz-lenovo',
+  25: 'https://allegrolokalnie.pl/oferta/pamiec-ram-hynix-2-gb-ddr2-667-mhz-pc25300s-sodimm',
   27: 'https://allegrolokalnie.pl/oferta/dysk-ssd-128-gb-tgf'
 });
