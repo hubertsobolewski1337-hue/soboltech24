@@ -11,6 +11,7 @@ Object.assign(window.ST24_DATA.directUrls, {
   17: 'https://allegrolokalnie.pl/oferta/procesor-intel-core-2-duo-t7300-200-ghz',
   18: 'https://allegrolokalnie.pl/oferta/procesor-intel-pentium-dualcore-t2130-186-ghz',
   19: 'https://allegrolokalnie.pl/oferta/matryca-141-lg-philips-lp141wp1tlb8-1440x900-wxga-30pin',
+  20: 'https://allegrolokalnie.pl/oferta/matryca-lg-lp173wd1tlg1-173-1600x900-hd-led-40pin-lvds',
   21: 'https://allegrolokalnie.pl/oferta/szelki-bezpieczenstwa-protekt-p12-mx-pro-xxl-lonza-y-aw137-2x-az023',
   22: 'https://allegrolokalnie.pl/oferta/karta-wifi-ralink-rt5390-150-mbs-mini-pcie-asus',
   23: 'https://allegrolokalnie.pl/oferta/karta-sieciowa-wifi-5-bluetooth-50-realtek-rtl8822ce-hp-m2',
