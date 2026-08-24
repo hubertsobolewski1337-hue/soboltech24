@@ -17,5 +17,6 @@ Object.assign(window.ST24_DATA.directUrls, {
   23: 'https://allegrolokalnie.pl/oferta/karta-sieciowa-wifi-5-bluetooth-50-realtek-rtl8822ce-hp-m2',
   24: 'https://allegrolokalnie.pl/oferta/karta-wifi-intel-300-mbs-245-ghz-lenovo',
   25: 'https://allegrolokalnie.pl/oferta/pamiec-ram-hynix-2-gb-ddr2-667-mhz-pc25300s-sodimm',
+  26: 'https://allegrolokalnie.pl/oferta/pamiec-ram-samsung-8-gb-2x4-gb-ddr4-3200-mhz',
   27: 'https://allegrolokalnie.pl/oferta/dysk-ssd-128-gb-tgf'
 });
