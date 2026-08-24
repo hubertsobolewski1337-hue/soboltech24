@@ -7,6 +7,7 @@ Object.assign(window.ST24_DATA.directUrls, {
   11: 'https://allegrolokalnie.pl/oferta/karta-wifi-bluetooth-ralink-rt3290le-hp-690020001-mini-pcie',
   12: 'https://allegrolokalnie.pl/oferta/karta-wifi-atheros-ar5bxb63-toshiba-wll3141d4-mini-pcie-54-mbs',
   14: 'https://allegrolokalnie.pl/oferta/procesor-intel-core-i32370m-240-ghz-tyt',
+  16: 'https://allegrolokalnie.pl/oferta/pamiec-ram-samsung-2x1gb-ddr2-667-mhz-sodimm',
   17: 'https://allegrolokalnie.pl/oferta/procesor-intel-core-2-duo-t7300-200-ghz',
   18: 'https://allegrolokalnie.pl/oferta/procesor-intel-pentium-dualcore-t2130-186-ghz',
   19: 'https://allegrolokalnie.pl/oferta/matryca-141-lg-philips-lp141wp1tlb8-1440x900-wxga-30pin',
